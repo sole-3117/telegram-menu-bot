@@ -21,8 +21,7 @@ def handle_user_start(bot, message, ADMIN_ID):
         db["users"][user_id] = {"name": name}
         save_db(db)
         bot.send_message(ADMIN_ID, f"🆕 Yangi foydalanuvchi: {name} ({user_id})")
-    bot.send_message(message.chat.id, f"👋 Salom {name}! Botga xush kelibsiz.
-Token yuborib yangi bot qo‘shishingiz mumkin.")
+    bot.send_message(message.chat.id, f"👋 Salom {name}! Botga xush kelibsiz.Token yuborib yangi bot qo‘shishingiz mumkin.")
 
 def handle_admin_message(bot, text):
     try:
