@@ -28,7 +28,6 @@ def handle_admin_message(bot, text):
         parts = text.split(" ", 2)
         user_id = parts[1]
         reply_text = parts[2]
-        bot.send_message(user_id, f"📩 Admin javobi:
-{reply_text}")
+        bot.send_message(user_id, f"📩 Admin javobi:{reply_text}")
     except:
         pass
