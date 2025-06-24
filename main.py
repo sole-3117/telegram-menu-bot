@@ -28,8 +28,8 @@ def text_handler(message):
     elif user_id == ADMIN_ID and text.startswith("/admin"):
         handle_admin_commands(bot, message)
     else:
-        bot.send_message(ADMIN_ID, f"ð¨ Xabar:ð¤{message.from_user.first_name} ({user_id}) {text}")
-        bot.send_message(user_id, "â Xabaringiz adminga yuborildi.")
+        bot.send_message(ADMIN_ID, f"Xabar: {message.from_user.first_name} ({user_id}) {text}")
+        bot.send_message(user_id, "Xabaringiz adminga yuborildi.")
 
 @app.route('/' + API_TOKEN, methods=['POST'])
 def webhook():
