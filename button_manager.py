@@ -1,39 +1,61 @@
-from user_manager import load_db, save_db
+import json
+from telebot import types
+from user_manager import load_data, save_data
 
 def handle_button_commands(bot, message):
     user_id = str(message.from_user.id)
-    db = load_db()
     text = message.text.strip()
-    user_tokens = [t for t, info in db["tokens"].items() if info["owner"] == user_id]
-    if not user_tokens:
-        bot.send_message(message.chat.id, "❌ Siz hech qanday bot qo‘shmagansiz.")
+    data = load_data()
+
+    # Tekshirish
+    if user_id not in data or "bots" not in data[user_id] or not data[user_id]["bots"]:
+        bot.send_message(message.chat.id, "❗️Avval bot tokenini yuboring.")
         return
-    token = user_tokens[0]
-    if text.startswith("knopka"):
+
+    current_bot = data[user_id]["bots"][-1]
+    if "buttons" not in current_bot:
+        current_bot["buttons"] = []
+
+    # Tugma qo‘shish
+    if text.startswith("knopka "):
         try:
-            parts = text.split(" ", 2)
-            button_text = parts[1]
-            button_data = parts[2]
-            if token not in db["buttons"]:
-                db["buttons"][token] = []
-            db["buttons"][token].append({"text": button_text, "data": button_data})
-            save_db(db)
-            bot.send_message(message.chat.id, f"✅ Tugma '{button_text}' qo‘shildi.")
+            content = text[7:]
+            name, url = content.split("|")
+            current_bot["buttons"].append({"text": name.strip(), "url": url.strip()})
+            save_data(data)
+            bot.send_message(message.chat.id, f"✅ Tugma qo‘shildi: {name}")
         except:
-            bot.send_message(message.chat.id, "❌ Tugma qo‘shishda xatolik. Format: knopka [matn] [ma’lumot]")
-    elif text.startswith("o'chirish") or text.startswith("ochirish"):
+            bot.send_message(message.chat.id, "⚠️ Noto‘g‘ri format. Masalan:\nknopka 🎬 Kino|https://kino.uz")
+
+    # Tugmalarni ko‘rish
+    elif text == "ko‘rish":
+        if not current_bot["buttons"]:
+            bot.send_message(message.chat.id, "⚠️ Tugmalar mavjud emas.")
+            return
+
+        msg = "📋 Tugmalar ro‘yxati:\n\n"
+        for i, btn in enumerate(current_bot["buttons"], start=1):
+            msg += f"{i}. {btn['text']} - {btn['url']}\n"
+        bot.send_message(message.chat.id, msg)
+
+    # Tugma o‘chirish (raqam orqali)
+    elif text.startswith("o‘chirish "):
         try:
-            parts = text.split(" ", 1)
-            button_text = parts[1]
-            if token in db["buttons"]:
-                old_len = len(db["buttons"][token])
-                db["buttons"][token] = [b for b in db["buttons"][token] if b["text"] != button_text]
-                if len(db["buttons"][token]) < old_len:
-                    bot.send_message(message.chat.id, f"🗑 Tugma '{button_text}' o‘chirildi.")
-                else:
-                    bot.send_message(message.chat.id, f"❌ Bunday tugma topilmadi.")
-            else:
-                bot.send_message(message.chat.id, "⚠️ Sizda hali hech qanday tugma mavjud emas.")
-            save_db(db)
+            index = int(text.split()[1]) - 1
+            removed = current_bot["buttons"].pop(index)
+            save_data(data)
+            bot.send_message(message.chat.id, f"❌ O‘chirildi: {removed['text']}")
         except:
-            bot.send_message(message.chat.id, "❌ Tugma o‘chirishda xatolik. Format: o'chirish [matn]")
+            bot.send_message(message.chat.id, "⚠️ Noto‘g‘ri format yoki noto‘g‘ri raqam. Masalan:\no‘chirish 1")
+
+    # Tugma tahrirlash (raqam bilan yangi text|url)
+    elif text.startswith("tahrirla "):
+        try:
+            parts = text.split(maxsplit=2)
+            index = int(parts[1]) - 1
+            name, url = parts[2].split("|")
+            current_bot["buttons"][index] = {"text": name.strip(), "url": url.strip()}
+            save_data(data)
+            bot.send_message(message.chat.id, f"✏️ Tahrirlandi: {name}")
+        except:
+            bot.send_message(message.chat.id, "⚠️ Format xato. Masalan:\ntahrirla 1 📺 Kino|https://kino.uz")
