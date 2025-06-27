@@ -7,7 +7,7 @@ from admin_panel import handle_admin_commands
 import os
 
 # Bot sozlamalari
-API_TOKEN = 'YOUR_BOT_TOKEN'
+API_TOKEN = '8068908504:AAGOAScdRyNcgoM0drIbqQ-8D3Hjx55a9JU'
 bot = telebot.TeleBot(API_TOKEN)
 ADMIN_ID = 6887251996  # O‘zingizning Telegram ID'ingizni yozing
 
