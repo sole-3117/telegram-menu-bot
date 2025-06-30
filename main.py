@@ -6,8 +6,8 @@ from token_manager import handle_token_input
 from button_manager import handle_button_commands
 from admin_panel import handle_admin_commands
 
-API_TOKEN = os.getenv("7979366222:AAHD5pq0l-B1qOCv5I_-ZA5GVLkd3noV2h0")
-ADMIN_ID = int(os.getenv("6887251996"))
+API_TOKEN = os.getenv("BOT_TOKEN")
+ADMIN_ID = int(os.getenv("ADMIN_ID"))
 bot = telebot.TeleBot(API_TOKEN)
 app = Flask(__name__)
 
@@ -29,8 +29,7 @@ def text_handler(message):
     elif user_id == ADMIN_ID and text.startswith("/admin"):
         handle_admin_commands(bot, message)
     else:
-        bot.send_message(ADMIN_ID, f"📨 Xabar: 👤{message.from_user.first_name} ({user_id})
-{text}")
+        bot.send_message(ADMIN_ID, f"📨 Xabar: 👤{message.from_user.first_name} ({user_id})\n{text}")
         bot.send_message(user_id, "✅ Xabaringiz adminga yuborildi.")
 
 @app.route('/' + API_TOKEN, methods=['POST'])
