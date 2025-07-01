@@ -1,8 +1,6 @@
 from user_manager import load_db, save_db
 import telebot
 
-user_bots = {}
-
 def handle_button_commands(bot, message):
     user_id = str(message.from_user.id)
     text = message.text.strip()
@@ -12,22 +10,26 @@ def handle_button_commands(bot, message):
         bot.send_message(message.chat.id, "❗ Avval bot tokenini yuboring.")
         return
 
-    target_token = db[user_id]["bots"][0]
-    if target_token not in user_bots:
-        user_bots[target_token] = telebot.TeleBot(target_token)
-
-    user_bot = user_bots[target_token]
-
     if text.startswith("knopka"):
         parts = text.split(" ", 2)
         if len(parts) < 3:
-            bot.send_message(message.chat.id, "❗ Format: knopka <text> <callback_data>")
+            bot.send_message(message.chat.id, "❗ Format: knopka <matn> <callback>")
             return
         title, callback = parts[1], parts[2]
+        db[user_id]["buttons"].append({"text": title, "callback_data": callback})
+        save_db(db)
+        bot.send_message(message.chat.id, f"✅ Tugma saqlandi: {title}")
+
+    elif text.startswith("/menu"):
         markup = telebot.types.InlineKeyboardMarkup()
-        markup.add(telebot.types.InlineKeyboardButton(text=title, callback_data=callback))
-        user_bot.send_message(message.chat.id, "🔘 Yangi tugma:", reply_markup=markup)
-        bot.send_message(message.chat.id, "✅ Tugma yuborildi.")
+        for btn in db[user_id]["buttons"]:
+            markup.add(telebot.types.InlineKeyboardButton(text=btn["text"], callback_data=btn["callback_data"]))
+        bot.send_message(message.chat.id, "📋 Sizning menyuingiz:", reply_markup=markup)
+
     elif text.startswith("o'chirish"):
-        user_bot.send_message(message.chat.id, "🗑 Tugmalar o‘chirildi.")
-        bot.send_message(message.chat.id, "✅ O‘chirish buyrug‘i yuborildi.")
+        db[user_id]["buttons"] = []
+        save_db(db)
+        bot.send_message(message.chat.id, "🗑 Barcha tugmalar o‘chirildi.")
+
+def handle_callback(bot, call):
+    bot.answer_callback_query(call.id, f"✅ Siz '{call.data}' tugmasini bosdingiz.")
