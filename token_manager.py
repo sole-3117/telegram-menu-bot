@@ -16,5 +16,4 @@ def handle_token_input(bot, message, admin_id):
     db[user_id]["bots"].append(token)
     save_db(db)
     bot.send_message(message.chat.id, "✅ Bot token qabul qilindi va qo‘shildi.")
-    bot.send_message(admin_id, f"➕ Yangi bot qo‘shildi: {token}
-👤 {user_id}")
+    bot.send_message(admin_id, f"➕ Yangi bot qo‘shildi: {token}👤 {user_id}")
