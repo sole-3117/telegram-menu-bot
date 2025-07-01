@@ -27,7 +27,6 @@ def handle_user_start(bot, message, admin_id):
 def handle_admin_message(bot, text):
     try:
         _, uid, msg = text.split(" ", 2)
-        bot.send_message(int(uid), f"📩 Admin javobi:
-{msg}")
+        bot.send_message(int(uid), f"📩 Admin javobi:{msg}")
     except:
         pass
