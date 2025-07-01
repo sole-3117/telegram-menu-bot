@@ -6,8 +6,8 @@ from token_manager import handle_token_input
 from button_manager import handle_button_commands
 from admin_panel import handle_admin_commands
 
-API_TOKEN = os.getenv("7979366222:AAHD5pq0l-B1qOCv5I_-ZA5GVLkd3noV2h0")
-ADMIN_ID = int(os.getenv("6887251996"))
+API_TOKEN = os.getenv("API_TOKEN")
+ADMIN_ID = int(os.getenv("ADMIN_ID"))
 bot = telebot.TeleBot(API_TOKEN)
 app = Flask(__name__)
 
