@@ -27,7 +27,13 @@ def handle_admin_commands(bot, message):
             if not user:
                 bot.send_message(message.chat.id, "❗ Bunday foydalanuvchi topilmadi.")
                 return
-            info = f"""👤 Foydalanuvchi haqida:Ismi: {user['first_name']}Username: @{user['username']}Ro‘yxatdan o‘tgan: {user['joined']}Botlar soni: {len(user['bots'])} / {user.get('bot_limit',1)}Tugmalar soni: {len(user.get('buttons', []))}ID: {uid}"""
+            info = f"""👤 Foydalanuvchi haqida:
+            Ismi: {user['first_name']}
+            Username: @{user['username']}
+            Ro‘yxatdan o‘tgan: {user['joined']}
+            Botlar soni: {len(user['bots'])} / {user.get('bot_limit',1)}
+            Tugmalar soni: {len(user.get('buttons', []))}
+            ID: {uid}"""
             bot.send_message(message.chat.id, info)
         except:
             bot.send_message(message.chat.id, "❗ Foydalanuvchi ID noto‘g‘ri.")
